@@ -51,7 +51,7 @@ export const getSpeedCameras = async (req: Request, res: Response) => {
 
         const allCameras = [...overpassCameras, ...savedCameras];
 
-        res.json({ cameras: allCameras });
+        res.json({ speedCameras: allCameras });
     } catch (error) {
         res.status(500).json({ error: `Internal server error: ${error}` });
     }
