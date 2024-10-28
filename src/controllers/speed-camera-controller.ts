@@ -1,3 +1,4 @@
+import { Feature, FeatureCollection } from "@turf/helpers";
 import { Request, Response } from "express";
 
 import {
@@ -51,7 +52,23 @@ export const getSpeedCameras = async (req: Request, res: Response) => {
 
         const allCameras = [...overpassCameras, ...savedCameras];
 
-        res.json({ speedCameras: allCameras });
+        const featureCollection = {
+            type: "FeatureCollection",
+            features: allCameras.map((camera) => ({
+                type: "Feature",
+                geometry: {
+                    type: "Point",
+                    coordinates: [camera.geometry.coordinates[0], camera.geometry.coordinates[1]],
+                },
+                properties: {
+                    type: camera.properties.type,
+                    address: camera.properties.address,
+                    direction: camera.properties.direction,
+                },
+            })),
+        };
+
+        res.json({ data: featureCollection as FeatureCollection });
     } catch (error) {
         res.status(500).json({ error: `Internal server error: ${error}` });
     }
@@ -95,7 +112,20 @@ export const reportSpeedCamera = async (req: Request, res: Response) => {
 
         await newSpeedCamera.save();
 
-        res.json({ newCamera: newSpeedCamera });
+        const featureCollection = {
+            type: "Feature",
+            geometry: {
+                type: "Point",
+                coordinates: [newSpeedCamera.coordinates[0], newSpeedCamera.coordinates[1]],
+            },
+            properties: {
+                type: newSpeedCamera.type,
+                address: newSpeedCamera.address,
+                direction: newSpeedCamera.direction,
+            },
+        };
+
+        res.json({ data: featureCollection as Feature });
     } catch (error) {
         res.status(500).json({ error: `Internal server error: ${error}` });
     }
