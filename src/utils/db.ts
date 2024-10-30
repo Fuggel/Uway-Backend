@@ -7,7 +7,7 @@ const connectDB = async () => {
         const mongoUri = NODE_ENV === "production" ? MONGODB_URI_PROD : MONGODB_URI_DEV;
         await mongoose.connect(mongoUri);
 
-        console.log("MongoDB connected");
+        console.log(`${NODE_ENV}: DB connected`);
     } catch (error) {
         console.log(`Error connecting to MongoDB: ${error}`);
         process.exit(1);
