@@ -20,4 +20,4 @@ const SpeedCameraSchema: Schema = new Schema({
     address: { type: String, required: true },
 });
 
-export const SpeedCamera = mongoose.model<ISpeedCamera>("SpeedCamera", SpeedCameraSchema);
+export const SpeedCamera = mongoose.model<ISpeedCamera>("SpeedCamera", SpeedCameraSchema, "speed-cameras");
