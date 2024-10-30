@@ -29,8 +29,3 @@ Submit a new speed camera location report.
     -   `type`: **Enum** - Type of speed camera, either `mobile` or `stationary`.
 -   **Response**:
     -   Returns a feature object for the reported speed camera.
-
-## Tech Stack
-
--   TypeScript
--   Express.js
