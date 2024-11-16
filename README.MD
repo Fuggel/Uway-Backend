@@ -1,6 +1,6 @@
-# NavSync Backend
+# Uway Backend
 
-NavSync Backend is serving the NavSync app, enabling users to access and report speed cameras.
+Uway Backend is serving the Uway app, enabling users to access and report speed cameras.
 
 ## Endpoints
 
@@ -9,7 +9,7 @@ NavSync Backend is serving the NavSync app, enabling users to access and report 
 Retrieve speed camera locations based on the provided coordinates.
 
 -   **Method**: `GET`
--   **URL**: `https://navsync-backend.onrender.com/api/speed-cameras?coordinates=lng,lat`
+-   **URL**: `https://uway-backend.onrender.com/api/speed-cameras?coordinates=lng,lat`
 -   **Parameters**:
     -   `lng`: Longitude of the coordinates.
     -   `lat`: Latitude of the coordinates.
@@ -21,7 +21,7 @@ Retrieve speed camera locations based on the provided coordinates.
 Submit a new speed camera location report.
 
 -   **Method**: `POST`
--   **URL**: `https://navsync-backend.onrender.com/api/report-speed-camera`
+-   **URL**: `https://uway-backend.onrender.com/api/report-speed-camera`
 -   **Body**:
     -   `deviceId`: **String** - Unique ID of the device reporting the speed camera.
     -   `coordinates`: **Array** - An array containing `lng` (Longitude) and `lat` (Latitude).
