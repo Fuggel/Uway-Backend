@@ -9,8 +9,3 @@ export interface BoundingBox {
     maxLat: number;
     maxLon: number;
 }
-
-export interface ReverseGeocodeProperties {
-    full_address: string;
-    name: string;
-}

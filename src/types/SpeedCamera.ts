@@ -3,15 +3,6 @@ export enum SpeedCameraType {
     Mobile = "mobile",
 }
 
-export interface ISpeedCamera {
-    deviceId: string;
-    timestamp: Date;
-    coordinates: [number, number];
-    direction: number;
-    type: SpeedCameraType;
-    address: string;
-}
-
 export interface Overpass<T> {
     elements: {
         type: string;

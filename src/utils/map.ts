@@ -1,8 +1,5 @@
-import axios from "axios";
-
-import { MAPBOX_ACCESS_TOKEN, MAPBOX_REVERSE_GEOCODING_API } from "../constants/api-constants";
-import { LonLat, ReverseGeocodeProperties } from "../types/ICoordinates";
-import { SpeedCameraType } from "../types/ISpeedCamera";
+import { LonLat } from "../types/Geojson";
+import { SpeedCameraType } from "../types/SpeedCamera";
 
 export function isValidLonLat(lon: number | undefined, lat: number | undefined) {
     if (lon === undefined || lat === undefined) {
@@ -25,24 +22,6 @@ export function boundingBox(lonLat: LonLat, distance: number) {
         minLon: lonLat.lon - lonDelta,
         maxLat: lonLat.lat + latDelta,
         maxLon: lonLat.lon + lonDelta,
-    };
-}
-
-export async function reverseGeocode(lon: number, lat: number): Promise<ReverseGeocodeProperties> {
-    if (!isValidLonLat(lon, lat)) {
-        return { name: "Unbekannt", full_address: "Adresse nicht gefunden" };
-    }
-
-    const response = await axios.get(
-        `${MAPBOX_REVERSE_GEOCODING_API}?longitude=${lon}&latitude=${lat}&limit=1&language=de&access_token=${MAPBOX_ACCESS_TOKEN}`
-    );
-
-    const fullAddress = response.data?.features[0]?.properties.full_address ?? "Adresse nicht gefunden";
-    const name = response.data?.features[0]?.properties.name ?? "Unbekannt";
-
-    return {
-        name: name,
-        full_address: fullAddress,
     };
 }
 

@@ -3,9 +3,9 @@ import axios from "axios";
 
 import { OPENSTREETMAP_API } from "../constants/api-constants";
 import { DEFAULT_FC } from "../constants/map-constants";
-import { BoundingBox, LonLat } from "../types/ICoordinates";
-import { Overpass, SpeedCameraProperties } from "../types/ISpeedCamera";
-import { boundingBox, reverseGeocode } from "../utils/map";
+import { BoundingBox, LonLat } from "../types/Geojson";
+import { Overpass, SpeedCameraProperties } from "../types/SpeedCamera";
+import { boundingBox } from "../utils/map";
 
 export async function fetchSpeedCameras(params: {
     userLonLat: LonLat;
@@ -37,14 +37,12 @@ export async function fetchSpeedCameras(params: {
 async function convertToGeoJSON(overpassData: Overpass<SpeedCameraProperties>): Promise<FeatureCollection> {
     const features = await Promise.all(
         overpassData.elements.map(async (element) => {
-            const { name, full_address } = await reverseGeocode(element.lon, element.lat);
-
             return {
                 type: "Feature",
                 properties: {
                     ...element.tags,
-                    name,
-                    address: full_address,
+                    name: "Blitzer",
+                    address: element.tags.address,
                 },
                 geometry: {
                     type: "Point",
