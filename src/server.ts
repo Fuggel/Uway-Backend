@@ -1,7 +1,11 @@
 import cors from "cors";
 import express from "express";
 
-import { getSpeedCamerasRoute } from "./routes/speed-camera-routes";
+import { directionRoute } from "./routes/direction-routes";
+import { gasStationsRoute } from "./routes/gas-station-routes";
+import { incidentsRoute } from "./routes/incident-routes";
+import { searchLocationsRoute, searchSuggestionsRoute } from "./routes/search-routes";
+import { speedCameraRoutes } from "./routes/speed-camera-routes";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -9,7 +13,16 @@ const PORT = process.env.PORT || 3001;
 app.use(cors());
 app.use(express.json());
 
-app.use("/api", getSpeedCamerasRoute);
+const router = express.Router();
+
+router.use(speedCameraRoutes);
+router.use(searchSuggestionsRoute);
+router.use(searchLocationsRoute);
+router.use(incidentsRoute);
+router.use(gasStationsRoute);
+router.use(directionRoute);
+
+app.use("/api", router);
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

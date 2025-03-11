@@ -4,6 +4,6 @@ import { getSpeedCameras } from "../controllers/speed-camera-controller";
 
 const router = express.Router();
 
-const getSpeedCamerasRoute = router.get("/speed-cameras", getSpeedCameras as Application);
+const speedCameraRoutes = router.get("/speed-cameras", getSpeedCameras as Application);
 
-export { getSpeedCamerasRoute };
+export { speedCameraRoutes };

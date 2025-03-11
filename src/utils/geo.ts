@@ -1,5 +1,6 @@
+import { FeatureCollection } from "@turf/helpers";
+
 import { LonLat } from "../types/Geojson";
-import { SpeedCameraType } from "../types/SpeedCamera";
 
 export function isValidLonLat(lon: number | undefined, lat: number | undefined) {
     if (lon === undefined || lat === undefined) {
@@ -13,7 +14,7 @@ export function boundingBox(lonLat: LonLat, distance: number) {
         return;
     }
 
-    const metersPerDegree = 111111; // Roughly 111 km at the equator
+    const metersPerDegree = 111111;
     const latDelta = distance / metersPerDegree;
     const lonDelta = distance / (metersPerDegree * Math.cos(lonLat.lat * (Math.PI / 180)));
 
@@ -25,22 +26,24 @@ export function boundingBox(lonLat: LonLat, distance: number) {
     };
 }
 
-export function formatCameraFeature(params: {
-    type: SpeedCameraType;
-    address: string | undefined;
-    direction: string | undefined;
-    coordinates: LonLat;
-}) {
+export function convertToGeoJson<T>(params: {
+    data: T[];
+    getProperties: (item: T) => Record<string, unknown>;
+    getCoordinates: (item: T) => [number, number];
+}): FeatureCollection {
     return {
-        type: "Feature",
-        properties: {
-            type: params.type,
-            address: params.address || "Unbekannt",
-            direction: params.direction,
-        },
-        geometry: {
-            type: "Point",
-            coordinates: [params.coordinates.lon, params.coordinates.lat],
-        },
+        type: "FeatureCollection",
+        features: params.data.map((element) => ({
+            type: "Feature",
+            properties: params.getProperties(element),
+            geometry: {
+                type: "Point",
+                coordinates: params.getCoordinates(element),
+            },
+        })),
     };
+}
+
+export function splitCoordinates(coordinates: string) {
+    return coordinates.split(",").map(Number) as [number, number];
 }

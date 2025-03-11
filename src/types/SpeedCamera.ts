@@ -1,17 +1,10 @@
-export enum SpeedCameraType {
-    Stationary = "stationary",
-    Mobile = "mobile",
-}
-
-export interface Overpass<T> {
-    elements: {
-        type: string;
-        nodes: number[];
-        id: number;
-        lat: number;
-        lon: number;
-        tags: T;
-    }[];
+export interface OverpassSpeedCamera {
+    type: string;
+    nodes: number[];
+    id: number;
+    lat: number;
+    lon: number;
+    tags: SpeedCameraProperties;
 }
 
 export interface SpeedCameraProperties {
@@ -28,4 +21,8 @@ export interface SpeedCameraProperties {
         type: string;
         coordinates: number[];
     };
+}
+
+export interface SpeedCameraRequestParams {
+    coordinates: string | undefined;
 }
