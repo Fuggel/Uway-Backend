@@ -33,14 +33,15 @@ export function convertToGeoJson<T>(params: {
 }): FeatureCollection {
     return {
         type: "FeatureCollection",
-        features: params.data.map((element) => ({
-            type: "Feature",
-            properties: params.getProperties(element),
-            geometry: {
-                type: "Point",
-                coordinates: params.getCoordinates(element),
-            },
-        })),
+        features:
+            params.data?.map((element) => ({
+                type: "Feature",
+                properties: params.getProperties(element),
+                geometry: {
+                    type: "Point",
+                    coordinates: params.getCoordinates(element),
+                },
+            })) || [],
     };
 }
 

@@ -13,7 +13,7 @@ export async function fetchIncidents(params: {
     distance: number;
 }): Promise<FeatureCollection<Geometry, GeometryCollection>> {
     try {
-        if (!params.userLonLat.lon || !params.userLonLat.lat) {
+        if (!params.userLonLat.lon || !params.userLonLat.lat || !params.distance) {
             return DEFAULT_FC;
         }
 

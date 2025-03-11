@@ -1,3 +1,7 @@
+import dotenv from "dotenv";
+
+dotenv.config();
+
 export const API_KEY = {
     REVENUE_CAT_IOS: String(process.env._RC_IOS),
     REVENUE_CAT_ANDROID: String(process.env.RC_ANDROID),
@@ -18,4 +22,16 @@ export const THRESHOLD = {
     GAS_STATION: {
         SHOW_IN_KILOMETERS: Number(process.env.SHOW_GAS_STATION_THRESHOLD_IN_KILOMETERS),
     },
+};
+
+export const INTERVAL = {
+    RATE_LIMITER_IN_MINUTES: Number(process.env.RATE_LIMITER_INTERVAL_IN_MINUTES),
+};
+
+export const RATE_LIMITER = {
+    INCIDENT: Number(process.env.RATE_LIMITER_INCIDENT),
+    SPEED_CAMERA: Number(process.env.RATE_LIMITER_SPEED_CAMERA),
+    GAS_STATION: Number(process.env.RATE_LIMITER_GAS_STATION),
+    SEARCH: Number(process.env.RATE_LIMITER_SEARCH),
+    DIRECTION: Number(process.env.RATE_LIMITER_DIRECTIONS),
 };

@@ -13,7 +13,7 @@ export async function fetchGasStations(params: {
     radius: number;
 }): Promise<FeatureCollection<Geometry, GeometryCollection>> {
     try {
-        if (!params.userLonLat.lon || !params.userLonLat.lat) {
+        if (!params.userLonLat.lon || !params.userLonLat.lat || !params.radius) {
             return DEFAULT_FC;
         }
 
