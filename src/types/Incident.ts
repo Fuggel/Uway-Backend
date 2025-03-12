@@ -48,7 +48,3 @@ export interface IncidentProperties {
         coordinates: number[][];
     };
 }
-
-export interface IncidentRequestParams {
-    coordinates: string | undefined;
-}

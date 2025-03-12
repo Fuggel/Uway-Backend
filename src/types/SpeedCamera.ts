@@ -22,7 +22,3 @@ export interface SpeedCameraProperties {
         coordinates: number[];
     };
 }
-
-export interface SpeedCameraRequestParams {
-    coordinates: string | undefined;
-}

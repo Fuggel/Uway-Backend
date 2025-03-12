@@ -14,7 +14,3 @@ export interface GasStation {
     houseNumber: string;
     postCode: number;
 }
-
-export interface GasStationRequestParams {
-    coordinates: string | undefined;
-}

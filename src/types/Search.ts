@@ -33,7 +33,8 @@ export interface SearchFeature {
 export interface SearchSuggestionRequestParams {
     query: string | undefined;
     sessionToken: string | undefined;
-    coordinates: string | undefined;
+    lon: number | undefined;
+    lat: number | undefined;
 }
 
 export interface SearchLocationRequestParams {

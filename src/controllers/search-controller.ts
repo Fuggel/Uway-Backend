@@ -5,15 +5,13 @@ import { SearchLocationRequestParams, SearchSuggestionRequestParams } from "../t
 import { isValidLonLat } from "../utils/geo";
 
 export const getSearchSuggestions = async (req: Request, res: Response) => {
-    const { query, sessionToken, coordinates: coordinatesParam } = req.query as Partial<SearchSuggestionRequestParams>;
+    const { query, sessionToken, lon, lat } = req.query as Partial<SearchSuggestionRequestParams>;
 
-    if (!coordinatesParam) {
+    if (!lon || !lat) {
         return res.status(400).json({ error: "Coordinates are required." });
     }
 
-    const coordinates = coordinatesParam.split(",").map(Number) as [number, number];
-
-    if (coordinates.length !== 2 || !isValidLonLat(coordinates[0], coordinates[1])) {
+    if (!isValidLonLat(lon, lat)) {
         return res.status(400).json({ error: "Invalid coordinates format." });
     }
 
@@ -25,7 +23,7 @@ export const getSearchSuggestions = async (req: Request, res: Response) => {
         const suggestions = await fetchSearchSuggestion({
             query,
             sessionToken,
-            lngLat: { lon: coordinates[0], lat: coordinates[1] },
+            lngLat: { lon, lat },
         });
         return res.json({ data: suggestions });
     } catch (error) {

@@ -9,10 +9,10 @@ Proxy backend for the Uway UI.
 Retrieve speed camera locations based on the provided coordinates.
 
 -   **Method**: `GET`
--   **URL**: `https://uway-backend-3kp6.onrender.com/api/speed-cameras?coordinates=lng,lat`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/speed-cameras?lon=lon&lat=lat`
 -   **Parameters**:
-    -   `lng`: Longitude of the coordinates.
-    -   `lat`: Latitude of the coordinates.
+    -   `lon`: Longitude of the user's location.
+    -   `lat`: Latitude of the user's location.
 -   **Response**:
     -   Returns a FeatureCollection JSON containing a list of speed camera locations within the specified coordinates.
 
@@ -21,11 +21,11 @@ Retrieve speed camera locations based on the provided coordinates.
 Retrieve location search suggestions based on user input.
 
 -   **Method**: `GET`
--   **URL**: `https://uway-backend-3kp6.onrender.com/api/search-suggestions?query=QUERY&sessionToken=TOKEN&coordinates=lng,lat`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/search-suggestions?query=QUERY&sessionToken=TOKEN&lon=lon&lat=lat`
 -   **Parameters**:
     -   `query`: The Mapbox ID of the location.
     -   `sessionToken`: A unique session token for the request.
-    -   `lng`: Longitude of the user's location.
+    -   `lon`: Longitude of the user's location.
     -   `lat`: Latitude of the user's location.
 -   **Response**:
     -   Returns a list of suggested locations based on the search query and coordinates.
@@ -48,9 +48,9 @@ Retrieve detailed location information based on a Mapbox ID.
 Retrieve real-time traffic incidents based on the provided coordinates.
 
 -   **Method**: `GET`
--   **URL**: `https://uway-backend-3kp6.onrender.com/api/incidents?coordinates=lng,lat`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/incidents?lon=lon&lat=lat`
 -   **Parameters**:
-    -   `lng`: Longitude of the user's location.
+    -   `lon`: Longitude of the user's location.
     -   `lat`: Latitude of the user's location.
 -   **Response**:
     -   Returns a FeatureCollection JSON containing a list of traffic incidents within the specified area.
@@ -60,9 +60,9 @@ Retrieve real-time traffic incidents based on the provided coordinates.
 Retrieve nearby gas stations based on the provided coordinates.
 
 -   **Method**: `GET`
--   **URL**: `https://uway-backend-3kp6.onrender.com/api/gas-stations?coordinates=lng,lat`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/gas-stations?lon=lon&lat=lat`
 -   **Parameters**:
-    -   `lng`: Longitude of the user's location.
+    -   `lon`: Longitude of the user's location.
     -   `lat`: Latitude of the user's location.
 -   **Response**:
     -   Returns a FeatureCollection JSON containing a list of gas stations within the specified radius.
@@ -72,7 +72,7 @@ Retrieve nearby gas stations based on the provided coordinates.
 Retrieve route directions based on the provided start and destination coordinates.
 
 -   **Method**: `GET`
--   **URL**: `https://uway-backend-3kp6.onrender.com/api/directions?profile=profileType&startCoordinates=lng,lat&destinationCoordinates=lng,lat&excludeTypes=type&waypoint=lng,lat`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/directions?profile=profileType&startCoordinates=lon,lat&destinationCoordinates=lon,lat&excludeTypes=type&waypoint=lon,lat`
 -   **Parameters**:
     -   `profile`: The type of routing profile (e.g., `driving`, `walking`, `cycling`).
     -   `startCoordinates`: Longitude and latitude of the starting point.
