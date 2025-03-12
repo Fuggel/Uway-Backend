@@ -36,10 +36,12 @@ export const getDirections = async (req: Request, res: Response) => {
     try {
         const directions = await fetchDirections({
             profile,
-            startLngLat: { lon: startCoordinates[0], lat: startCoordinates[1] },
-            destinationLngLat: { lon: destinationCoordinates[0], lat: destinationCoordinates[1] },
+            startLngLat: { lon: Number(startCoordinates[0]), lat: Number(startCoordinates[1]) },
+            destinationLngLat: { lon: Number(destinationCoordinates[0]), lat: Number(destinationCoordinates[1]) },
             excludeTypes,
-            waypoint: waypointCoordinates ? { lon: waypointCoordinates[0], lat: waypointCoordinates[1] } : undefined,
+            waypoint: waypointCoordinates
+                ? { lon: Number(waypointCoordinates[0]), lat: Number(waypointCoordinates[1]) }
+                : undefined,
         });
         return res.json({ data: directions });
     } catch (error) {

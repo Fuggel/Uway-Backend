@@ -18,7 +18,7 @@ export const getIncidents = async (req: Request, res: Response) => {
 
     try {
         const featureCollection = await fetchIncidents({
-            userLonLat: { lon, lat },
+            userLonLat: { lon: Number(lon), lat: Number(lat) },
             distance: THRESHOLD.INCIDENT.SHOW_IN_METERS,
         });
 

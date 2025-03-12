@@ -18,7 +18,7 @@ export const getSpeedCameras = async (req: Request, res: Response) => {
 
     try {
         const featureCollection = await fetchSpeedCameras({
-            userLonLat: { lon, lat },
+            userLonLat: { lon: Number(lon), lat: Number(lat) },
             distance: THRESHOLD.SPEED_CAMERA.SHOW_IN_METERS,
         });
 

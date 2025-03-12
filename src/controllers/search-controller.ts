@@ -23,7 +23,7 @@ export const getSearchSuggestions = async (req: Request, res: Response) => {
         const suggestions = await fetchSearchSuggestion({
             query,
             sessionToken,
-            lngLat: { lon, lat },
+            lngLat: { lon: Number(lon), lat: Number(lat) },
         });
         return res.json({ data: suggestions });
     } catch (error) {

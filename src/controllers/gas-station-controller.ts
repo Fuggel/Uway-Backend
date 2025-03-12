@@ -18,7 +18,7 @@ export const getGasStations = async (req: Request, res: Response) => {
 
     try {
         const featureCollection = await fetchGasStations({
-            userLonLat: { lon, lat },
+            userLonLat: { lon: Number(lon), lat: Number(lat) },
             radius: THRESHOLD.GAS_STATION.SHOW_IN_KILOMETERS,
         });
 
