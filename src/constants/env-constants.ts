@@ -35,3 +35,7 @@ export const RATE_LIMITER = {
     SEARCH: Number(process.env.RATE_LIMITER_SEARCH),
     DIRECTION: Number(process.env.RATE_LIMITER_DIRECTIONS),
 };
+
+export const AUTH = {
+    JWT_SECRET_KEY: String(process.env.JWT_SECRET_KEY),
+};

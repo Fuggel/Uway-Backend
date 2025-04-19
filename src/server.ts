@@ -1,6 +1,7 @@
 import cors from "cors";
 import express from "express";
 
+import { authRoute } from "./routes/auth-routes";
 import { directionRoute } from "./routes/direction-routes";
 import { gasStationsRoute } from "./routes/gas-station-routes";
 import { incidentsRoute } from "./routes/incident-routes";
@@ -17,6 +18,7 @@ app.use(express.json());
 
 const router = express.Router();
 
+router.use(authRoute);
 router.use(speedCameraRoutes);
 router.use(searchSuggestionsRoute);
 router.use(searchLocationsRoute);
