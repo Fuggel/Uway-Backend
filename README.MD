@@ -1,6 +1,6 @@
 # Uway Backend
 
-Proxy backend for the Uway UI.
+Backend for Uway.
 
 ## Endpoints
 
