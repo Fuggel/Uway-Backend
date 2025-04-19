@@ -1,19 +1,26 @@
 import axios from "axios";
 
-const REVENUECAT_API_KEY = process.env.REVENUECAT_API_KEY;
+import { AUTH } from "../constants/env-constants";
+import { SubscriptionStatus } from "../types/RevenueCat";
 
-export const checkSubscription = async (rcUserId: string) => {
-    const response = await axios.get(`https://api.revenuecat.com/v1/subscribers/${rcUserId}`, {
-        headers: {
-            Authorization: `Bearer ${REVENUECAT_API_KEY}`,
-        },
-    });
+export const checkSubscription = async (rcUserId: string): Promise<boolean> => {
+    try {
+        const response = await axios.get(`https://api.revenuecat.com/v1/subscribers/${rcUserId}`, {
+            headers: {
+                Authorization: `Bearer ${AUTH.RC_API_KEY}`,
+            },
+        });
 
-    const data = response.data.subscriber;
+        const subscriber = (response.data as SubscriptionStatus).subscriber;
 
-    const isActive = Object.values(data.entitlements || {}).some(
-        (ent: any) => ent?.expires_date && new Date(ent.expires_date) > new Date()
-    );
+        return Object.values(subscriber.subscriptions || {}).some((sub) => {
+            const expires = sub?.expires_date;
+            const refunded = sub?.refunded_at;
 
-    return isActive;
+            return expires && new Date(expires) > new Date() && refunded === null;
+        });
+    } catch (err) {
+        console.log(`Error checking subscription for user ${rcUserId}:`, err);
+        return false;
+    }
 };
