@@ -1,10 +1,10 @@
 # Uway Backend
 
-Backend for Uway.
+Backend for Uway
 
 ## Endpoints
 
-### Get Speed Cameras
+### Get JWT Token
 
 Generates a JWT token after verifying the user's subscription status via RevenueCat.
 
