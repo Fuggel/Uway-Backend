@@ -6,6 +6,17 @@ Proxy backend for the Uway UI.
 
 ### Get Speed Cameras
 
+Generates a JWT token after verifying the user's subscription status via RevenueCat.
+
+-   **Method**: `GET`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/get-token?rcUserId=rcUserId`
+-   **Parameters**:
+    -   `rcUserId`: The RevenueCat user ID to validate subscription status.
+-   **Response**:
+    -   Returns a JWT token if the subscription is active.
+
+### Get Speed Cameras
+
 Retrieve speed camera locations based on the provided coordinates.
 
 -   **Method**: `GET`
