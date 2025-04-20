@@ -25,7 +25,10 @@ export const getToken = async (req: Request, res: Response) => {
             expiresIn: AUTH.JWT_EXPIRATION_TIME_IN_SECONDS,
         });
 
-        res.json({ token, expiresIn: AUTH.JWT_EXPIRATION_TIME_IN_SECONDS });
+        res.json({
+            token,
+            expiresIn: new Date(Date.now() + AUTH.JWT_EXPIRATION_TIME_IN_SECONDS * 1000).toISOString(),
+        });
     } catch (error) {
         res.status(500).json({
             token: null,
