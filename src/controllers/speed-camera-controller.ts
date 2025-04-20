@@ -9,11 +9,13 @@ export const getSpeedCameras = async (req: Request, res: Response) => {
     const { lon, lat } = req.query as Partial<LonLat>;
 
     if (!lon || !lat) {
-        return res.status(400).json({ error: "Coordinates are required." });
+        res.status(400).json({ error: "Coordinates are required." });
+        return;
     }
 
     if (!isValidLonLat(lon, lat)) {
-        return res.status(400).json({ error: "Invalid coordinates format." });
+        res.status(400).json({ error: "Invalid coordinates format." });
+        return;
     }
 
     try {
@@ -22,8 +24,8 @@ export const getSpeedCameras = async (req: Request, res: Response) => {
             distance: THRESHOLD.SPEED_CAMERA.SHOW_IN_METERS,
         });
 
-        return res.json({ data: featureCollection });
+        res.json({ data: featureCollection });
     } catch (error) {
-        return res.status(500).json({ error: `Internal server error: ${error}` });
+        res.status(500).json({ error: `Internal server error: ${error}` });
     }
 };

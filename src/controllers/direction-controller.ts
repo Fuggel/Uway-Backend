@@ -14,7 +14,8 @@ export const getDirections = async (req: Request, res: Response) => {
     } = req.query as Partial<DirectionRequestParams>;
 
     if (!startCoordinatesParam || !destinationCoordinatesParam) {
-        return res.status(400).json({ error: "Start and destination coordinates are required." });
+        res.status(400).json({ error: "Start and destination coordinates are required." });
+        return;
     }
 
     const startCoordinates = splitCoordinates(startCoordinatesParam as string);
@@ -22,15 +23,18 @@ export const getDirections = async (req: Request, res: Response) => {
     const waypointCoordinates = waypoint ? splitCoordinates(waypoint as string) : undefined;
 
     if (!profile) {
-        return res.status(400).json({ error: "Profile is required." });
+        res.status(400).json({ error: "Profile is required." });
+        return;
     }
 
     if (startCoordinates.length !== 2 || !isValidLonLat(startCoordinates[0], startCoordinates[1])) {
-        return res.status(400).json({ error: "Invalid start coordinates format." });
+        res.status(400).json({ error: "Invalid start coordinates format." });
+        return;
     }
 
     if (destinationCoordinates.length !== 2 || !isValidLonLat(destinationCoordinates[0], destinationCoordinates[1])) {
-        return res.status(400).json({ error: "Invalid destination coordinates format." });
+        res.status(400).json({ error: "Invalid destination coordinates format." });
+        return;
     }
 
     try {
@@ -43,8 +47,8 @@ export const getDirections = async (req: Request, res: Response) => {
                 ? { lon: Number(waypointCoordinates[0]), lat: Number(waypointCoordinates[1]) }
                 : undefined,
         });
-        return res.json({ data: directions });
+        res.json({ data: directions });
     } catch (error) {
-        return res.status(500).json({ error: `Internal server error: ${error}` });
+        res.status(500).json({ error: `Internal server error: ${error}` });
     }
 };

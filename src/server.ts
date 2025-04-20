@@ -1,11 +1,11 @@
 import cors from "cors";
 import express from "express";
 
-import { authRoute } from "./routes/auth-routes";
-import { directionRoute } from "./routes/direction-routes";
-import { gasStationsRoute } from "./routes/gas-station-routes";
-import { incidentsRoute } from "./routes/incident-routes";
-import { searchLocationsRoute, searchSuggestionsRoute } from "./routes/search-routes";
+import { authRoutes } from "./routes/auth-routes";
+import { directionRoutes } from "./routes/direction-routes";
+import { gasStationsRoutes } from "./routes/gas-station-routes";
+import { incidentsRoutes } from "./routes/incident-routes";
+import { searchRoutes } from "./routes/search-routes";
 import { speedCameraRoutes } from "./routes/speed-camera-routes";
 
 const app = express();
@@ -18,13 +18,12 @@ app.use(express.json());
 
 const router = express.Router();
 
-router.use(authRoute);
+router.use(authRoutes);
 router.use(speedCameraRoutes);
-router.use(searchSuggestionsRoute);
-router.use(searchLocationsRoute);
-router.use(incidentsRoute);
-router.use(gasStationsRoute);
-router.use(directionRoute);
+router.use(searchRoutes);
+router.use(incidentsRoutes);
+router.use(gasStationsRoutes);
+router.use(directionRoutes);
 
 app.use("/api", router);
 

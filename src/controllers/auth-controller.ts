@@ -9,22 +9,27 @@ export const getToken = async (req: Request, res: Response) => {
     const { rcUserId } = req.query as Partial<AuthRequestParams>;
 
     if (!rcUserId) {
-        return res.status(400).json({ message: "Missing revenue cat user id" });
+        res.status(400).json({ token: null, message: "Missing revenue cat user id" });
+        return;
     }
 
     try {
         const isActive = await checkSubscription(rcUserId);
 
         if (!isActive) {
-            return res.status(403).json({ message: "Subscription not active." });
+            res.status(403).json({ token: null, message: "Subscription not active." });
+            return;
         }
 
         const token = jwt.sign({ id: rcUserId }, AUTH.JWT_SECRET_KEY, {
             expiresIn: AUTH.JWT_EXPIRATION_TIME_IN_SECONDS,
         });
 
-        return res.json({ token, expiresIn: AUTH.JWT_EXPIRATION_TIME_IN_SECONDS });
+        res.json({ token, expiresIn: AUTH.JWT_EXPIRATION_TIME_IN_SECONDS });
     } catch (error) {
-        return res.status(500).json({ error: `Internal server error: ${error}` });
+        res.status(500).json({
+            token: null,
+            error: `Internal server error: ${error}`,
+        });
     }
 };

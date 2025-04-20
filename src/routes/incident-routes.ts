@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express from "express";
 
 import { RATE_LIMITER } from "../constants/env-constants";
 import { getIncidents } from "../controllers/incidents-controller";
@@ -7,11 +7,6 @@ import { createRateLimit } from "../middleware/rate-limit-middleware";
 
 const router = express.Router();
 
-const incidentsRoute = router.get(
-    "/incidents",
-    createRateLimit({ max: RATE_LIMITER.INCIDENT }),
-    verifyJWT,
-    getIncidents as Application
-);
+router.get("/incidents", createRateLimit({ max: RATE_LIMITER.INCIDENT }), verifyJWT, getIncidents);
 
-export { incidentsRoute };
+export { router as incidentsRoutes };

@@ -1,4 +1,4 @@
-import express, { Application } from "express";
+import express from "express";
 
 import { RATE_LIMITER } from "../constants/env-constants";
 import { getDirections } from "../controllers/direction-controller";
@@ -7,11 +7,6 @@ import { createRateLimit } from "../middleware/rate-limit-middleware";
 
 const router = express.Router();
 
-const directionRoute = router.get(
-    "/directions",
-    createRateLimit({ max: RATE_LIMITER.DIRECTION }),
-    verifyJWT,
-    getDirections as Application
-);
+router.get("/directions", createRateLimit({ max: RATE_LIMITER.DIRECTION }), verifyJWT, getDirections);
 
-export { directionRoute };
+export { router as directionRoutes };
