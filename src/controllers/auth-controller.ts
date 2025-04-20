@@ -19,10 +19,11 @@ export const getToken = async (req: Request, res: Response) => {
             return res.status(403).json({ message: "Subscription not active." });
         }
 
-        const token = jwt.sign({ id: rcUserId }, AUTH.JWT_SECRET_KEY, { expiresIn: "1d" });
+        const token = jwt.sign({ id: rcUserId }, AUTH.JWT_SECRET_KEY, {
+            expiresIn: AUTH.JWT_EXPIRATION_TIME_IN_SECONDS,
+        });
 
-        // expiresIn has to match the token expiration time in the client
-        return res.json({ token, expiresIn: 86400 });
+        return res.json({ token, expiresIn: AUTH.JWT_EXPIRATION_TIME_IN_SECONDS });
     } catch (error) {
         return res.status(500).json({ error: `Internal server error: ${error}` });
     }

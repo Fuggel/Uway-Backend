@@ -38,5 +38,6 @@ export const RATE_LIMITER = {
 
 export const AUTH = {
     JWT_SECRET_KEY: String(process.env.JWT_SECRET_KEY),
+    JWT_EXPIRATION_TIME_IN_SECONDS: Number(process.env.JWT_EXPIRATION_TIME_IN_SECONDS),
     RC_API_KEY: String(process.env.RC_API_KEY),
 };
