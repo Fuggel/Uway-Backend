@@ -34,6 +34,7 @@ export const RATE_LIMITER = {
     GAS_STATION: Number(process.env.RATE_LIMITER_GAS_STATION),
     SEARCH: Number(process.env.RATE_LIMITER_SEARCH),
     DIRECTION: Number(process.env.RATE_LIMITER_DIRECTIONS),
+    SPEED_LIMIT: Number(process.env.RATE_LIMITER_SPEED_LIMIT),
 };
 
 export const AUTH = {

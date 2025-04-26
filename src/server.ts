@@ -7,6 +7,7 @@ import { gasStationsRoutes } from "./routes/gas-station-routes";
 import { incidentsRoutes } from "./routes/incident-routes";
 import { searchRoutes } from "./routes/search-routes";
 import { speedCameraRoutes } from "./routes/speed-camera-routes";
+import { speedLimitRoutes } from "./routes/speed-limit-routes";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -20,6 +21,7 @@ const router = express.Router();
 
 router.use(authRoutes);
 router.use(speedCameraRoutes);
+router.use(speedLimitRoutes);
 router.use(searchRoutes);
 router.use(incidentsRoutes);
 router.use(gasStationsRoutes);
