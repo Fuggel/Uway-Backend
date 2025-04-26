@@ -29,7 +29,6 @@ export async function fetchDirections(params: {
         queryParams.append("steps", "true");
         queryParams.append("language", "de");
         queryParams.append("overview", "full");
-        queryParams.append("annotations", "maxspeed,distance,duration");
         queryParams.append("banner_instructions", "true");
         queryParams.append("voice_instructions", "true");
         queryParams.append("voice_units", "metric");

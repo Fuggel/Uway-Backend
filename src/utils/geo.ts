@@ -1,4 +1,5 @@
 import { FeatureCollection } from "@turf/helpers";
+import { simplify } from "@turf/turf";
 
 import { LonLat } from "../types/Geojson";
 
@@ -47,4 +48,11 @@ export function convertToGeoJson<T>(params: {
 
 export function splitCoordinates(coordinates: string) {
     return coordinates.split(",").map(Number) as [number, number];
+}
+
+export function simplifyGeometry(geometry: GeoJSON.LineString, tolerance = 0.00001, highQuality = true) {
+    return simplify(geometry, {
+        tolerance,
+        highQuality,
+    });
 }

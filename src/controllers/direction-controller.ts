@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
 import { fetchDirections } from "../services/direction";
-import { DirectionRequestParams } from "../types/Direction";
-import { isValidLonLat, splitCoordinates } from "../utils/geo";
+import { DirectionRequestParams, DirectionResponse } from "../types/Direction";
+import { isValidLonLat, simplifyGeometry, splitCoordinates } from "../utils/geo";
 
 export const getDirections = async (req: Request, res: Response) => {
     const {
@@ -38,7 +38,7 @@ export const getDirections = async (req: Request, res: Response) => {
     }
 
     try {
-        const directions = await fetchDirections({
+        const directions = (await fetchDirections({
             profile,
             startLngLat: { lon: Number(startCoordinates[0]), lat: Number(startCoordinates[1]) },
             destinationLngLat: { lon: Number(destinationCoordinates[0]), lat: Number(destinationCoordinates[1]) },
@@ -46,8 +46,30 @@ export const getDirections = async (req: Request, res: Response) => {
             waypoint: waypointCoordinates
                 ? { lon: Number(waypointCoordinates[0]), lat: Number(waypointCoordinates[1]) }
                 : undefined,
+        })) as DirectionResponse;
+
+        const optimizedDirections = directions.routes.map((route) => {
+            return {
+                geometry: simplifyGeometry(route.geometry),
+                distance: route.distance,
+                duration: route.duration,
+                legs: route.legs.map((leg) => ({
+                    summary: leg.summary,
+                    distance: leg.distance,
+                    duration: leg.duration,
+                    steps: leg.steps.map((step) => ({
+                        voiceInstructions: step.voiceInstructions,
+                        bannerInstructions: step.bannerInstructions,
+                        maneuver: step.maneuver,
+                        distance: step.distance,
+                        duration: step.duration,
+                        geometry: simplifyGeometry(step.geometry),
+                    })),
+                })),
+            };
         });
-        res.json({ data: directions });
+
+        res.json({ data: { routes: optimizedDirections } });
     } catch (error) {
         res.status(500).json({ error: `Internal server error: ${error}` });
     }
