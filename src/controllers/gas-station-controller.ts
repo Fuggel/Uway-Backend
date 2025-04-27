@@ -2,7 +2,9 @@ import { Request, Response } from "express";
 
 import { THRESHOLD } from "../constants/env-constants";
 import { fetchGasStations } from "../services/gas-station";
+import { GasStation } from "../types/GasStation";
 import { LonLat } from "../types/Geojson";
+import { getStationIcon } from "../utils/gas-station";
 import { isValidLonLat } from "../utils/geo";
 
 export const getGasStations = async (req: Request, res: Response) => {
@@ -24,7 +26,20 @@ export const getGasStations = async (req: Request, res: Response) => {
             radius: THRESHOLD.GAS_STATION.SHOW_IN_KILOMETERS,
         });
 
-        res.json({ data: featureCollection });
+        const gasStations = featureCollection.features.map((feature) => {
+            const { properties } = feature;
+            const iconType = getStationIcon(
+                featureCollection.features.map((f) => f.properties as unknown as GasStation),
+                (properties as unknown as GasStation).diesel
+            );
+
+            return {
+                ...feature,
+                properties: { ...properties, iconType },
+            };
+        });
+
+        res.json({ data: { type: "FeatureCollection", features: gasStations } });
     } catch (error) {
         res.status(500).json({ error: `Internal server error: ${error}` });
     }
