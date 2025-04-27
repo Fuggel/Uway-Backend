@@ -76,15 +76,15 @@ export const calculateWarnings = (params: {
         if (isAhead) {
             const warning = determineWarning(eventType, distanceToFeature);
 
-            if (distanceToFeature <= early) {
-                closestWarning = {
-                    ...warning,
-                    warningState: WarningState.EARLY,
-                };
-            } else if (distanceToFeature <= late) {
+            if (distanceToFeature <= late) {
                 closestWarning = {
                     ...warning,
                     warningState: WarningState.LATE,
+                };
+            } else if (distanceToFeature <= early) {
+                closestWarning = {
+                    ...warning,
+                    warningState: WarningState.EARLY,
                 };
             }
         }
