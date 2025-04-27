@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 
 import { fetchSpeedLimits } from "../services/speed-limit";
 import { SpeedLimitRequestParams } from "../types/SpeedLimit";
-import { isValidLonLat } from "../utils/geo";
+import { isValidLonLat, simplifyGeometry } from "../utils/geo";
 
 export const getSpeedLimits = async (req: Request, res: Response) => {
     const { lon, lat, distance } = req.query as Partial<SpeedLimitRequestParams>;
@@ -28,7 +28,14 @@ export const getSpeedLimits = async (req: Request, res: Response) => {
             distance: Number(distance),
         });
 
-        res.json({ data: featureCollection });
+        const opzimizedSpeedLimits = featureCollection.features.map((feature) => {
+            return {
+                ...feature,
+                geometry: simplifyGeometry(feature.geometry as GeoJSON.LineString, 0.00001),
+            };
+        });
+
+        res.json({ data: { type: "FeatureCollection", features: opzimizedSpeedLimits } });
     } catch (error) {
         res.status(500).json({ error: `Internal server error: ${error}` });
     }
