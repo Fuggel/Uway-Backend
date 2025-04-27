@@ -8,6 +8,7 @@ import { incidentsRoutes } from "./routes/incident-routes";
 import { searchRoutes } from "./routes/search-routes";
 import { speedCameraRoutes } from "./routes/speed-camera-routes";
 import { speedLimitRoutes } from "./routes/speed-limit-routes";
+import { initWebSocketServer } from "./ws";
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -29,6 +30,8 @@ router.use(directionRoutes);
 
 app.use("/api", router);
 
-app.listen(PORT, () => {
+const server = app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
 });
+
+initWebSocketServer(server);

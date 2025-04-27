@@ -56,3 +56,8 @@ export function simplifyGeometry(geometry: GeoJSON.LineString, tolerance = 0.000
         highQuality,
     });
 }
+
+export function calculateAngleDifference(angle1: number, angle2: number) {
+    const diff = Math.abs(angle1 - angle2);
+    return diff > 180 ? 360 - diff : diff;
+}

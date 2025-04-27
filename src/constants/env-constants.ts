@@ -27,6 +27,10 @@ export const THRESHOLD = {
     SPEED_LIMIT: {
         SHOW_IN_METERS: Number(process.env.SHOW_SPEED_LIMIT_THRESHOLD_IN_METERS),
     },
+
+    NAVIGATION: {
+        IS_AHEAD_IN_DEGREES: Number(process.env.IS_AHEAD_THRESHOLD_IN_DEGREES),
+    },
 };
 
 export const INTERVAL = {
