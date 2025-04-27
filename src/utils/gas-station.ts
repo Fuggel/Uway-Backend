@@ -1,3 +1,4 @@
+import { THRESHOLD } from "../constants/env-constants";
 import { GasStation } from "../types/GasStation";
 
 export function getStationIcon(stations: GasStation[], price: number) {
@@ -7,9 +8,9 @@ export function getStationIcon(stations: GasStation[], price: number) {
     const avgPrice = totalPrice / stations.length;
     const diffPercentage = ((price - avgPrice) / avgPrice) * 100;
 
-    if (diffPercentage >= 3) {
+    if (diffPercentage >= THRESHOLD.GAS_STATION.PRICE_DIFFERENCE_THRESHOLD) {
         return `${iconName}-expensive`;
-    } else if (diffPercentage <= -3) {
+    } else if (diffPercentage <= -THRESHOLD.GAS_STATION.PRICE_DIFFERENCE_THRESHOLD) {
         return `${iconName}-cheap`;
     } else {
         return `${iconName}-average`;

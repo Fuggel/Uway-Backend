@@ -15,6 +15,11 @@ export interface SpeedLimitProperties {
     surface: string;
 }
 
+export interface SpeedLimitAlert {
+    distance: number;
+    maxspeed: string;
+}
+
 export interface SpeedLimitRequestParams {
     lon: number | undefined;
     lat: number | undefined;
