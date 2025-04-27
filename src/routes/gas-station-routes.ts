@@ -7,6 +7,6 @@ import { createRateLimit } from "../middleware/rate-limit-middleware";
 
 const router = express.Router();
 
-router.get("/gas-stations", getGasStations);
+router.get("/gas-stations", createRateLimit({ max: RATE_LIMITER.GAS_STATION }), verifyJWT, getGasStations);
 
 export { router as gasStationsRoutes };
