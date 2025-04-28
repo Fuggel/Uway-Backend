@@ -21,4 +21,11 @@ export interface SpeedCameraProperties {
         type: string;
         coordinates: number[];
     };
+    type?: SpeedCameraType;
+}
+
+export enum SpeedCameraType {
+    FIXED = 0,
+    MOBILE = 1,
+    RED_LIGHT = 2,
 }

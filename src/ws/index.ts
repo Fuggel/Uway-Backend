@@ -19,7 +19,7 @@ export const initWebSocketServer = (httpServer: http.Server) => {
         console.log(`New client connected: ${socket.id}`);
 
         socket.on("userLocationUpdate", async (data: WarningListener) => {
-            const { eventType, lon, lat, heading, speed, userId } = data;
+            const { eventType, lon, lat, heading, speed, userId, eventWarningType } = data;
 
             if (!eventType || !lon || !lat || !heading || !speed || !userId) {
                 console.log(`At least one parameter is missing: ${JSON.stringify(data)}`);
@@ -39,10 +39,11 @@ export const initWebSocketServer = (httpServer: http.Server) => {
                     userLonLat: { lon, lat },
                     userHeading: heading,
                     userSpeed: speed,
+                    eventWarningType,
                 });
 
                 if (warning.warningType) {
-                    sendWarning({ userId, warning });
+                    sendWarning(userId, warning);
                 }
             } catch (error) {
                 console.log(`Error fetching event data: ${error}`);

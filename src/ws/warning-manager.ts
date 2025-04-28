@@ -5,16 +5,22 @@ import { THRESHOLD } from "../constants/env-constants";
 import { INITIAL_WARNING } from "../constants/warning-constants";
 import { fetchIncidents } from "../services/incident-service";
 import { fetchSpeedCameras } from "../services/speed-camera-service";
-import { LonLat } from "../types/Geojson";
-import { Warning, WarningState, WarningType } from "../types/WarningManager";
+import {
+    CalculateWarningsParams,
+    DetermineWarningParams,
+    EventDataParams,
+    Warning,
+    WarningState,
+    WarningType,
+} from "../types/WarningManager";
+import { determineIncidentType } from "../utils/incident-utils";
+import { determineSpeedCameraType } from "../utils/speed-camera-utils";
 import { isFeatureAhead, warningThresholds } from "../utils/warning-manager-utils";
 import { io } from "./index";
 
-export const fetchEventData = async (params: {
-    eventType: WarningType;
-    userLonLat: LonLat;
-    distance: number;
-}): Promise<FeatureCollection<Geometry, GeometryCollection>> => {
+export const fetchEventData = async (
+    params: EventDataParams
+): Promise<FeatureCollection<Geometry, GeometryCollection>> => {
     switch (params.eventType) {
         case WarningType.SPEED_CAMERA:
             return await fetchSpeedCameras({
@@ -31,23 +37,17 @@ export const fetchEventData = async (params: {
     }
 };
 
-export const sendWarning = (params: { userId: string | undefined; warning: Warning }) => {
-    if (!io || !params.userId) {
+export const sendWarning = (userId: string | undefined, warning: Warning) => {
+    if (!io || !userId) {
         console.log("Socket.io server not initialized.");
         return;
     }
 
-    io.to(params.userId).emit("warning", params.warning);
+    io.to(userId).emit("warning", warning);
 };
 
-export const calculateWarnings = (params: {
-    eventType: WarningType;
-    fc: FeatureCollection<Geometry, GeometryCollection>;
-    userLonLat: LonLat;
-    userHeading: number | undefined;
-    userSpeed: number | undefined;
-}) => {
-    const { eventType, fc, userLonLat, userHeading, userSpeed } = params;
+export const calculateWarnings = (params: CalculateWarningsParams) => {
+    const { eventType, fc, userLonLat, userHeading, userSpeed, eventWarningType } = params;
 
     let closestWarning: Warning = INITIAL_WARNING;
 
@@ -74,7 +74,11 @@ export const calculateWarnings = (params: {
         });
 
         if (isAhead) {
-            const warning = determineWarning(eventType, distanceToFeature);
+            const warning = determineWarning({
+                type: eventType,
+                distance: distanceToFeature,
+                eventWarningType,
+            });
 
             if (distanceToFeature <= late) {
                 closestWarning = {
@@ -93,21 +97,25 @@ export const calculateWarnings = (params: {
     return closestWarning.warningType ? closestWarning : INITIAL_WARNING;
 };
 
-const determineWarning = (type: WarningType, distance: number) => {
-    switch (type) {
+const determineWarning = (params: DetermineWarningParams) => {
+    switch (params.type) {
         case WarningType.SPEED_CAMERA:
+            const speedCameraType = determineSpeedCameraType(params.eventWarningType?.speedCamera);
+
             return {
                 warningType: WarningType.SPEED_CAMERA,
-                distance: distance,
-                textToSpeech: `Blitzer in ${distance.toFixed(0)} Metern.`,
-                text: `Blitzer in ${distance.toFixed(0)} m.`,
+                distance: params.distance,
+                textToSpeech: `${speedCameraType} in ${params.distance.toFixed(0)} Metern.`,
+                text: `${speedCameraType} in ${params.distance.toFixed(0)} m.`,
             };
         case WarningType.INCIDENT:
+            const incidentType = determineIncidentType(params.eventWarningType?.incident);
+
             return {
                 warningType: WarningType.INCIDENT,
-                distance: distance,
-                textToSpeech: `Gefahr in ${distance.toFixed(0)} Metern.`,
-                text: `Gefahr in ${distance.toFixed(0)} m.`,
+                distance: params.distance,
+                textToSpeech: `${incidentType} in ${params.distance.toFixed(0)} Metern.`,
+                text: `${incidentType} in ${params.distance.toFixed(0)} m.`,
             };
         default:
             return INITIAL_WARNING;
