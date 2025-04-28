@@ -3,11 +3,11 @@ import { distance } from "@turf/turf";
 
 import { THRESHOLD } from "../constants/env-constants";
 import { INITIAL_WARNING } from "../constants/warning-constants";
-import { fetchIncidents } from "../services/incident";
-import { fetchSpeedCameras } from "../services/speed-camera";
+import { fetchIncidents } from "../services/incident-service";
+import { fetchSpeedCameras } from "../services/speed-camera-service";
 import { LonLat } from "../types/Geojson";
 import { Warning, WarningState, WarningType } from "../types/WarningManager";
-import { isFeatureAhead, warningThresholds } from "../utils/warning";
+import { isFeatureAhead, warningThresholds } from "../utils/warning-manager-utils";
 import { io } from "./index";
 
 export const fetchEventData = async (params: {

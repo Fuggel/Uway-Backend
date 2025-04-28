@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import { fetchDirections } from "../services/direction";
+import { fetchDirections } from "../services/direction-service";
 import { DirectionRequestParams, DirectionResponse } from "../types/Direction";
-import { isValidLonLat, simplifyGeometry, splitCoordinates } from "../utils/geo";
+import { isValidLonLat, simplifyGeometry, splitCoordinates } from "../utils/geo-utils";
 
 export const getDirections = async (req: Request, res: Response) => {
     const {

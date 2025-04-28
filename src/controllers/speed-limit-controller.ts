@@ -3,9 +3,9 @@ import { distance, nearestPointOnLine } from "@turf/turf";
 import { Request, Response } from "express";
 
 import { THRESHOLD } from "../constants/env-constants";
-import { fetchSpeedLimits } from "../services/speed-limit";
+import { fetchSpeedLimits } from "../services/speed-limit-service";
 import { SpeedLimitAlert, SpeedLimitProperties, SpeedLimitRequestParams } from "../types/SpeedLimit";
-import { isValidLonLat } from "../utils/geo";
+import { isValidLonLat } from "../utils/geo-utils";
 
 export const getSpeedLimits = async (req: Request, res: Response) => {
     const { lon, lat } = req.query as Partial<SpeedLimitRequestParams>;

@@ -1,13 +1,7 @@
 import cors from "cors";
 import express from "express";
 
-import { authRoutes } from "./routes/auth-routes";
-import { directionRoutes } from "./routes/direction-routes";
-import { gasStationsRoutes } from "./routes/gas-station-routes";
-import { incidentsRoutes } from "./routes/incident-routes";
-import { searchRoutes } from "./routes/search-routes";
-import { speedCameraRoutes } from "./routes/speed-camera-routes";
-import { speedLimitRoutes } from "./routes/speed-limit-routes";
+import { ROUTES } from "./constants/route-constants";
 import { initWebSocketServer } from "./ws";
 
 const app = express();
@@ -20,13 +14,7 @@ app.use(express.json());
 
 const router = express.Router();
 
-router.use(authRoutes);
-router.use(speedCameraRoutes);
-router.use(speedLimitRoutes);
-router.use(searchRoutes);
-router.use(incidentsRoutes);
-router.use(gasStationsRoutes);
-router.use(directionRoutes);
+ROUTES.forEach((route) => router.use(route));
 
 app.use("/api", router);
 

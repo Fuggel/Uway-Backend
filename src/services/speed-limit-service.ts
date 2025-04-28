@@ -5,7 +5,7 @@ import { API_URL } from "../constants/api-constants";
 import { DEFAULT_FC } from "../constants/map-constants";
 import { BoundingBox, LonLat } from "../types/Geojson";
 import { OverpassSpeedLimit } from "../types/SpeedLimit";
-import { boundingBox } from "../utils/geo";
+import { boundingBox } from "../utils/geo-utils";
 
 export async function fetchSpeedLimits(params: {
     userLonLat: LonLat;

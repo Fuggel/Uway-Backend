@@ -9,4 +9,4 @@ const router = express.Router();
 
 router.get("/incidents", createRateLimit({ max: RATE_LIMITER.INCIDENT }), verifyJWT, getIncidents);
 
-export { router as incidentsRoutes };
+export { router as incidentRoutes };

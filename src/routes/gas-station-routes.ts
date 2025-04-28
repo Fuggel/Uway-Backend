@@ -9,4 +9,4 @@ const router = express.Router();
 
 router.get("/gas-stations", createRateLimit({ max: RATE_LIMITER.GAS_STATION }), verifyJWT, getGasStations);
 
-export { router as gasStationsRoutes };
+export { router as gasStationRoutes };

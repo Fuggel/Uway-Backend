@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
 import { THRESHOLD } from "../constants/env-constants";
-import { fetchIncidents } from "../services/incident";
+import { fetchIncidents } from "../services/incident-service";
 import { LonLat } from "../types/Geojson";
-import { isValidLonLat } from "../utils/geo";
+import { isValidLonLat } from "../utils/geo-utils";
 
 export const getIncidents = async (req: Request, res: Response) => {
     const { lon, lat } = req.query as Partial<LonLat>;

@@ -6,7 +6,7 @@ import { API_KEY } from "../constants/env-constants";
 import { DEFAULT_FC } from "../constants/map-constants";
 import { GasStation } from "../types/GasStation";
 import { LonLat } from "../types/Geojson";
-import { convertToGeoJson } from "../utils/geo";
+import { convertToGeoJson } from "../utils/geo-utils";
 
 export async function fetchGasStations(params: {
     userLonLat: LonLat;

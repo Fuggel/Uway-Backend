@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import jwt from "jsonwebtoken";
 
 import { AUTH } from "../constants/env-constants";
-import { checkSubscription } from "../services/revenue-cat";
+import { checkSubscription } from "../services/revenue-cat-service";
 import { AuthRequestParams } from "../types/Auth";
 
 export const getToken = async (req: Request, res: Response) => {

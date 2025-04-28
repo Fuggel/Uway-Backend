@@ -1,9 +1,9 @@
 import { Request, Response } from "express";
 
 import { THRESHOLD } from "../constants/env-constants";
-import { fetchSpeedCameras } from "../services/speed-camera";
+import { fetchSpeedCameras } from "../services/speed-camera-service";
 import { LonLat } from "../types/Geojson";
-import { isValidLonLat } from "../utils/geo";
+import { isValidLonLat } from "../utils/geo-utils";
 
 export const getSpeedCameras = async (req: Request, res: Response) => {
     const { lon, lat } = req.query as Partial<LonLat>;

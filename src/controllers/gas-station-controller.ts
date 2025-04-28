@@ -1,11 +1,11 @@
 import { Request, Response } from "express";
 
 import { THRESHOLD } from "../constants/env-constants";
-import { fetchGasStations } from "../services/gas-station";
+import { fetchGasStations } from "../services/gas-station-service";
 import { GasStation } from "../types/GasStation";
 import { LonLat } from "../types/Geojson";
-import { getStationIcon } from "../utils/gas-station";
-import { isValidLonLat } from "../utils/geo";
+import { getStationIcon } from "../utils/gas-station-utils";
+import { isValidLonLat } from "../utils/geo-utils";
 
 export const getGasStations = async (req: Request, res: Response) => {
     const { lon, lat } = req.query as Partial<LonLat>;

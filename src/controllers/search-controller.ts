@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 
-import { fetchSearchLocation, fetchSearchSuggestion } from "../services/search";
+import { fetchSearchLocation, fetchSearchSuggestion } from "../services/search-service";
 import { SearchLocationRequestParams, SearchSuggestionRequestParams } from "../types/Search";
-import { isValidLonLat } from "../utils/geo";
+import { isValidLonLat } from "../utils/geo-utils";
 
 export const getSearchSuggestions = async (req: Request, res: Response) => {
     const { query, sessionToken, lon, lat } = req.query as Partial<SearchSuggestionRequestParams>;

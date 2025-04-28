@@ -1,7 +1,7 @@
 import { point } from "@turf/helpers";
 import { bearing } from "@turf/turf";
 
-import { calculateAngleDifference } from "./geo";
+import { calculateAngleDifference } from "./geo-utils";
 
 export function warningThresholds(speed: number) {
     switch (true) {

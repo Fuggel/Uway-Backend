@@ -6,7 +6,7 @@ import { API_KEY } from "../constants/env-constants";
 import { DEFAULT_FC } from "../constants/map-constants";
 import { BoundingBox, LonLat } from "../types/Geojson";
 import { IncidentFeature } from "../types/Incident";
-import { boundingBox } from "../utils/geo";
+import { boundingBox } from "../utils/geo-utils";
 
 export async function fetchIncidents(params: {
     userLonLat: LonLat;
