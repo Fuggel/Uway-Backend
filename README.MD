@@ -1,12 +1,10 @@
 # Uway Backend
 
-Backend for Uway
-
 ## Endpoints
 
-### Get JWT Token
+### Get JWT
 
-Generates a JWT token after verifying the user's subscription status via RevenueCat.
+Generates a JWT after verifying the user's subscription status via RevenueCat.
 
 -   **Method**: `GET`
 -   **URL**: `https://uway-backend-3kp6.onrender.com/api/get-token?rcUserId=rcUserId`
@@ -26,6 +24,19 @@ Retrieve speed camera locations based on the provided coordinates.
     -   `lat`: Latitude of the user's location.
 -   **Response**:
     -   Returns a FeatureCollection JSON containing a list of speed camera locations within the specified coordinates.
+
+### Get Speed Limits
+
+Retrieve speed limits based on the provided coordinates.
+
+-   **Method**: `GET`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/speed-limits?lon=lon&lat=lat`
+-   **Parameters**:
+    -   `lon`: Longitude of the user's location.
+    -   `lat`: Latitude of the user's location.
+-   **Response**:
+
+    -   Returns a FeatureCollection JSON containing a list of speed limit locations within the specified coordinates.
 
 ### Get Search Suggestions
 
