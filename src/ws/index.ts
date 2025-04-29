@@ -1,7 +1,7 @@
 import http from "http";
 import { Server } from "socket.io";
 
-import { WarningListener } from "../types/WarningManager";
+import { SocketEvent, WarningListener } from "../types/WarningManager";
 import { sendWarning } from "./warning-manager";
 
 let io: Server | null = null;
@@ -17,7 +17,7 @@ export const initWebSocketServer = (httpServer: http.Server) => {
     io.on("connection", (socket) => {
         console.log(`New client connected: ${socket.id}`);
 
-        socket.on("userLocationUpdate", async (data: WarningListener) => {
+        socket.on(SocketEvent.USER_LOCATION_UPDATE, async (data: WarningListener) => {
             sendWarning(data, socket);
         });
 

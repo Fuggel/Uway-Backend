@@ -51,6 +51,12 @@ export interface DetermineWarningParams {
     type: WarningType;
     distance: number;
     eventWarningType: EventWarningType;
+    userSpeed: number;
 }
 
 export type EventWarningType = IncidentType | SpeedCameraType;
+
+export enum SocketEvent {
+    WARNING = "warning",
+    USER_LOCATION_UPDATE = "userLocationUpdate",
+}
