@@ -1,7 +1,8 @@
 import { FeatureCollection, Geometry, GeometryCollection } from "@turf/helpers";
 import { distance } from "@turf/turf";
+import { Socket } from "socket.io";
 
-import { THRESHOLD } from "../constants/env-constants";
+import { INTERVAL, THRESHOLD } from "../constants/env-constants";
 import { INITIAL_WARNING } from "../constants/warning-constants";
 import { fetchIncidents } from "../services/incident-service";
 import { fetchSpeedCameras } from "../services/speed-camera-service";
@@ -13,6 +14,7 @@ import {
     EventDataParams,
     EventWarningType,
     Warning,
+    WarningListener,
     WarningState,
     WarningType,
 } from "../types/WarningManager";
@@ -21,35 +23,57 @@ import { determineSpeedCameraType } from "../utils/speed-camera-utils";
 import { isFeatureAhead, warningThresholds } from "../utils/warning-manager-utils";
 import { io } from "./index";
 
-export const fetchEventData = async (
-    params: EventDataParams
-): Promise<FeatureCollection<Geometry, GeometryCollection>> => {
-    switch (params.eventType) {
-        case WarningType.SPEED_CAMERA:
-            return await fetchSpeedCameras({
-                userLonLat: params.userLonLat,
-                distance: params.distance,
-            });
-        case WarningType.INCIDENT:
-            return await fetchIncidents({
-                userLonLat: params.userLonLat,
-                distance: params.distance,
-            });
-        default:
-            throw new Error("Unknown event type");
-    }
-};
+const eventDataCache = new Map<string, { data: FeatureCollection<Geometry, GeometryCollection>; timestamp: number }>();
 
-export const sendWarning = (userId: string | undefined, warning: Warning) => {
-    if (!io || !userId) {
-        console.log("Socket.io server not initialized.");
+export const sendWarning = async (data: WarningListener, socket: Socket) => {
+    const { eventType, lon, lat, heading, speed, userId, eventWarningType } = data;
+
+    if (!eventType || !lon || !lat || !heading || !speed || !userId) {
+        console.log("At least one parameter is missing");
         return;
     }
 
-    io.to(userId).emit("warning", warning);
+    const cacheKey = `${socket.id}-${eventType}`;
+    const now = Date.now();
+
+    let cachedData = eventDataCache.get(cacheKey);
+
+    if (!cachedData || now - cachedData.timestamp > INTERVAL.CACHE_REFRESH_INTERVAL_IN_MINUTES) {
+        try {
+            const featureCollection = await fetchEventData({
+                eventType,
+                userLonLat: { lon, lat },
+                distance: THRESHOLD.SPEED_CAMERA.SHOW_IN_METERS,
+            });
+
+            cachedData = {
+                data: featureCollection,
+                timestamp: now,
+            };
+
+            eventDataCache.set(cacheKey, cachedData);
+        } catch (error) {
+            console.log(`Error fetching event data: ${error}`);
+            return;
+        }
+    }
+
+    const warning = calculateWarnings({
+        eventType,
+        fc: cachedData.data,
+        userLonLat: { lon, lat },
+        userHeading: heading,
+        userSpeed: speed,
+        eventWarningType,
+    });
+
+    if (warning.warningType) {
+        if (!io) return;
+        io.to(userId).emit("warning", warning);
+    }
 };
 
-export const calculateWarnings = (params: CalculateWarningsParams) => {
+const calculateWarnings = (params: CalculateWarningsParams) => {
     const { eventType, fc, userLonLat, userHeading, userSpeed } = params;
 
     let closestWarning: Warning = INITIAL_WARNING;
@@ -129,5 +153,22 @@ const determineWarning = (params: DetermineWarningParams) => {
             };
         default:
             return INITIAL_WARNING;
+    }
+};
+
+const fetchEventData = async (params: EventDataParams): Promise<FeatureCollection<Geometry, GeometryCollection>> => {
+    switch (params.eventType) {
+        case WarningType.SPEED_CAMERA:
+            return await fetchSpeedCameras({
+                userLonLat: params.userLonLat,
+                distance: params.distance,
+            });
+        case WarningType.INCIDENT:
+            return await fetchIncidents({
+                userLonLat: params.userLonLat,
+                distance: params.distance,
+            });
+        default:
+            throw new Error("Unknown event type");
     }
 };
