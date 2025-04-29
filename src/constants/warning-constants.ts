@@ -3,7 +3,7 @@ import { Warning } from "../types/WarningManager";
 export const INITIAL_WARNING: Warning = {
     warningType: null,
     warningState: null,
-    distance: null,
+    eventWarningType: null,
     textToSpeech: null,
     text: null,
 };

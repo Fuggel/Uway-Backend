@@ -5,10 +5,13 @@ import { THRESHOLD } from "../constants/env-constants";
 import { INITIAL_WARNING } from "../constants/warning-constants";
 import { fetchIncidents } from "../services/incident-service";
 import { fetchSpeedCameras } from "../services/speed-camera-service";
+import { IncidentProperties } from "../types/Incident";
+import { SpeedCameraProperties } from "../types/SpeedCamera";
 import {
     CalculateWarningsParams,
     DetermineWarningParams,
     EventDataParams,
+    EventWarningType,
     Warning,
     WarningState,
     WarningType,
@@ -47,7 +50,7 @@ export const sendWarning = (userId: string | undefined, warning: Warning) => {
 };
 
 export const calculateWarnings = (params: CalculateWarningsParams) => {
-    const { eventType, fc, userLonLat, userHeading, userSpeed, eventWarningType } = params;
+    const { eventType, fc, userLonLat, userHeading, userSpeed } = params;
 
     let closestWarning: Warning = INITIAL_WARNING;
 
@@ -63,6 +66,11 @@ export const calculateWarnings = (params: CalculateWarningsParams) => {
             eventType === WarningType.INCIDENT
                 ? (feature.geometry.coordinates[0] as [number, number])
                 : [feature.geometry.coordinates[0] as number, feature.geometry.coordinates[1] as number];
+
+        const eventWarningType: EventWarningType =
+            eventType === WarningType.INCIDENT
+                ? (feature.properties as unknown as IncidentProperties).iconCategory
+                : (feature.properties as unknown as SpeedCameraProperties).type;
 
         const distanceToFeature = distance(userPoint, eventPoint, { units: "meters" });
 
@@ -84,11 +92,13 @@ export const calculateWarnings = (params: CalculateWarningsParams) => {
                 closestWarning = {
                     ...warning,
                     warningState: WarningState.LATE,
+                    eventWarningType,
                 };
             } else if (distanceToFeature <= early) {
                 closestWarning = {
                     ...warning,
                     warningState: WarningState.EARLY,
+                    eventWarningType,
                 };
             }
         }
@@ -100,7 +110,7 @@ export const calculateWarnings = (params: CalculateWarningsParams) => {
 const determineWarning = (params: DetermineWarningParams) => {
     switch (params.type) {
         case WarningType.SPEED_CAMERA:
-            const speedCameraType = determineSpeedCameraType(params.eventWarningType?.speedCamera);
+            const speedCameraType = determineSpeedCameraType(params.eventWarningType as SpeedCameraProperties["type"]);
 
             return {
                 warningType: WarningType.SPEED_CAMERA,
@@ -109,7 +119,7 @@ const determineWarning = (params: DetermineWarningParams) => {
                 text: `${speedCameraType} in ${params.distance.toFixed(0)} m.`,
             };
         case WarningType.INCIDENT:
-            const incidentType = determineIncidentType(params.eventWarningType?.incident);
+            const incidentType = determineIncidentType(params.eventWarningType as IncidentProperties["iconCategory"]);
 
             return {
                 warningType: WarningType.INCIDENT,

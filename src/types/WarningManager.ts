@@ -22,7 +22,7 @@ export enum WarningType {
 export interface Warning {
     warningType: WarningType | null;
     warningState: WarningState | null;
-    distance: number | null;
+    eventWarningType: EventWarningType | null;
     textToSpeech: string | null;
     text: string | null;
 }
@@ -50,10 +50,7 @@ export interface CalculateWarningsParams {
 export interface DetermineWarningParams {
     type: WarningType;
     distance: number;
-    eventWarningType: EventWarningType | null;
+    eventWarningType: EventWarningType;
 }
 
-export interface EventWarningType {
-    incident?: IncidentType;
-    speedCamera?: SpeedCameraType;
-}
+export type EventWarningType = IncidentType | SpeedCameraType;
