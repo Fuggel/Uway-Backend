@@ -2,7 +2,7 @@ import http from "http";
 import { Server } from "socket.io";
 
 import { SocketEvent, WarningListener } from "../types/WarningManager";
-import { sendWarning } from "./warning-manager";
+import { eventDataCache, sendWarning, warningTimeouts } from "./warning-manager";
 
 let io: Server | null = null;
 
@@ -23,6 +23,19 @@ export const initWebSocketServer = (httpServer: http.Server) => {
 
         socket.on("disconnect", () => {
             console.log(`Client disconnected: ${socket.id}`);
+
+            for (const key of eventDataCache.keys()) {
+                if (key.startsWith(socket.id)) {
+                    eventDataCache.delete(key);
+                }
+            }
+
+            for (const [userId, timeout] of warningTimeouts.entries()) {
+                if (userId.startsWith(socket.id)) {
+                    clearTimeout(timeout);
+                    warningTimeouts.delete(userId);
+                }
+            }
         });
     });
 

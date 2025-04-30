@@ -4,14 +4,12 @@ import { Socket } from "socket.io";
 
 import { INTERVAL, THRESHOLD } from "../constants/env-constants";
 import { INITIAL_WARNING } from "../constants/warning-constants";
-import { fetchIncidents } from "../services/incident-service";
-import { fetchSpeedCameras } from "../services/speed-camera-service";
+import { fetchEventData } from "../services/warning-manager-service";
 import { IncidentProperties } from "../types/Incident";
 import { SpeedCameraProperties } from "../types/SpeedCamera";
 import {
     CalculateWarningsParams,
     DetermineWarningParams,
-    EventDataParams,
     EventWarningType,
     SocketEvent,
     Warning,
@@ -24,8 +22,11 @@ import { determineSpeedCameraType } from "../utils/speed-camera-utils";
 import { getRoundingThreshold, isFeatureAhead, warningThresholds } from "../utils/warning-manager-utils";
 import { io } from "./index";
 
-const eventDataCache = new Map<string, { data: FeatureCollection<Geometry, GeometryCollection>; timestamp: number }>();
-const warningTimeouts = new Map<string, NodeJS.Timeout>();
+export const eventDataCache = new Map<
+    string,
+    { data: FeatureCollection<Geometry, GeometryCollection>; timestamp: number }
+>();
+export const warningTimeouts = new Map<string, NodeJS.Timeout>();
 
 export const sendWarning = async (data: WarningListener, socket: Socket) => {
     const { eventType, lon, lat, heading, speed, userId, eventWarningType } = data;
@@ -41,11 +42,16 @@ export const sendWarning = async (data: WarningListener, socket: Socket) => {
     let cachedData = eventDataCache.get(cacheKey);
 
     if (!cachedData || now - cachedData.timestamp > INTERVAL.CACHE_REFRESH_INTERVAL_IN_MINUTES) {
+        eventDataCache.delete(cacheKey);
+
         try {
             const featureCollection = await fetchEventData({
                 eventType,
                 userLonLat: { lon, lat },
-                distance: THRESHOLD.SPEED_CAMERA.SHOW_IN_METERS,
+                distance:
+                    eventType === WarningType.SPEED_CAMERA
+                        ? THRESHOLD.SPEED_CAMERA.SHOW_IN_METERS
+                        : THRESHOLD.INCIDENT.SHOW_IN_METERS,
             });
 
             cachedData = {
@@ -174,22 +180,5 @@ const determineWarning = (params: DetermineWarningParams) => {
             };
         default:
             return INITIAL_WARNING;
-    }
-};
-
-const fetchEventData = async (params: EventDataParams): Promise<FeatureCollection<Geometry, GeometryCollection>> => {
-    switch (params.eventType) {
-        case WarningType.SPEED_CAMERA:
-            return await fetchSpeedCameras({
-                userLonLat: params.userLonLat,
-                distance: params.distance,
-            });
-        case WarningType.INCIDENT:
-            return await fetchIncidents({
-                userLonLat: params.userLonLat,
-                distance: params.distance,
-            });
-        default:
-            throw new Error("Unknown event type");
     }
 };

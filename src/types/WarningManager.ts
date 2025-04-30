@@ -31,13 +31,6 @@ export enum WarningState {
     EARLY = "early",
     LATE = "late",
 }
-
-export interface EventDataParams {
-    eventType: WarningType;
-    userLonLat: LonLat;
-    distance: number;
-}
-
 export interface CalculateWarningsParams {
     eventType: WarningType;
     fc: FeatureCollection<Geometry, GeometryCollection>;
