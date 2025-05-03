@@ -24,7 +24,7 @@ import { io } from "./index";
 
 export const eventDataCache = new Map<
     string,
-    { data: FeatureCollection<Geometry, GeometryCollection>; timestamp: number }
+    { data: FeatureCollection<Geometry, GeometryCollection>; timestamp: number; }
 >();
 export const warningTimeouts = new Map<string, NodeJS.Timeout>();
 
@@ -32,7 +32,6 @@ export const sendWarning = async (data: WarningListener, socket: Socket) => {
     const { eventType, lon, lat, heading, speed, userId, eventWarningType } = data;
 
     if (!eventType || !lon || !lat || !heading || !speed || !userId) {
-        console.log("At least one parameter is missing");
         return;
     }
 
