@@ -1,4 +1,4 @@
-import { FeatureCollection } from "@turf/helpers";
+import { Feature, FeatureCollection } from "@turf/helpers";
 import { simplify } from "@turf/turf";
 
 import { LonLat } from "../types/Geojson";
@@ -27,22 +27,28 @@ export function boundingBox(lonLat: LonLat, distance: number) {
     };
 }
 
-export function convertToGeoJson<T>(params: {
+export async function convertToGeoJson<T>(params: {
     data: T[];
-    getProperties: (item: T) => Record<string, unknown>;
+    getProperties: (item: T) => Promise<Record<string, unknown>> | Record<string, unknown>;
     getCoordinates: (item: T) => [number, number];
-}): FeatureCollection {
-    return {
-        type: "FeatureCollection",
-        features:
-            params.data?.map((element) => ({
+}): Promise<FeatureCollection> {
+    const features = await Promise.all(
+        params.data?.map(async (element) => {
+            const properties = await params.getProperties(element);
+            return {
                 type: "Feature",
-                properties: params.getProperties(element),
+                properties,
                 geometry: {
                     type: "Point",
                     coordinates: params.getCoordinates(element),
                 },
-            })) || [],
+            };
+        }) || []
+    );
+
+    return {
+        type: "FeatureCollection",
+        features: features as Feature[],
     };
 }
 

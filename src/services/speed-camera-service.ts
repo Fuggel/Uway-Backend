@@ -6,6 +6,7 @@ import { DEFAULT_FC } from "../constants/map-constants";
 import { BoundingBox, LonLat } from "../types/Geojson";
 import { OverpassSpeedCamera } from "../types/SpeedCamera";
 import { boundingBox, convertToGeoJson } from "../utils/geo-utils";
+import { reverseGeocode } from "./geo-service";
 
 export async function fetchSpeedCameras(params: {
     userLonLat: LonLat;
@@ -30,12 +31,15 @@ export async function fetchSpeedCameras(params: {
         return convertToGeoJson<OverpassSpeedCamera>({
             data: response.data.elements,
             getCoordinates: (element) => [element.lon, element.lat],
-            getProperties: (element) => ({
-                ...element.tags,
-                name: "Blitzer",
-                address: element.tags?.address,
-            }),
-        }) as FeatureCollection<Geometry, GeometryCollection>;
+            getProperties: async (element) => {
+                const { address } = await reverseGeocode(element.lon, element.lat);
+
+                return {
+                    ...element.tags,
+                    address,
+                };
+            },
+        }) as Promise<FeatureCollection<Geometry, GeometryCollection>>;
     } catch (error) {
         console.log(`Error fetching speed cameras: ${error}`);
         return DEFAULT_FC;

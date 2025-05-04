@@ -33,7 +33,7 @@ export async function fetchGasStations(params: {
             data: response.data.stations,
             getCoordinates: (station) => [station.lng, station.lat],
             getProperties: (station) => ({ ...station }),
-        }) as FeatureCollection<Geometry, GeometryCollection>;
+        }) as Promise<FeatureCollection<Geometry, GeometryCollection>>;
     } catch (error) {
         console.log(`Error fetching gas stations: ${error}`);
         return DEFAULT_FC;
