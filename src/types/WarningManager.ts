@@ -16,7 +16,7 @@ export interface WarningListener {
 
 export enum WarningType {
     INCIDENT = "incident",
-    SPEED_CAMERA = "speedCamera",
+    SPEED_CAMERA = "speed-camera",
 }
 
 export interface Warning {
@@ -49,7 +49,7 @@ export interface DetermineWarningParams {
 
 export type EventWarningType = IncidentType | SpeedCameraType;
 
-export enum SocketEvent {
-    WARNING = "warning",
-    USER_LOCATION_UPDATE = "userLocationUpdate",
+export interface EventDataCache {
+    data: FeatureCollection<Geometry, GeometryCollection>;
+    timestamp: number;
 }

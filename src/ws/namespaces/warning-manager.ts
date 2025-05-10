@@ -1,34 +1,37 @@
-import { FeatureCollection, Geometry, GeometryCollection } from "@turf/helpers";
 import { distance } from "@turf/turf";
 import { Socket } from "socket.io";
 
-import { INTERVAL, THRESHOLD } from "../constants/env-constants";
-import { INITIAL_WARNING } from "../constants/warning-constants";
-import { fetchEventData } from "../services/warning-manager-service";
-import { IncidentProperties } from "../types/Incident";
-import { SpeedCameraProperties } from "../types/SpeedCamera";
+import { io } from "..";
+import { INTERVAL, THRESHOLD } from "../../constants/env-constants";
+import { INITIAL_WARNING } from "../../constants/warning-constants";
+import { fetchEventData } from "../../services/warning-manager-service";
+import { IncidentProperties } from "../../types/Incident";
+import { SpeedCameraProperties } from "../../types/SpeedCamera";
 import {
     CalculateWarningsParams,
     DetermineWarningParams,
+    EventDataCache,
     EventWarningType,
-    SocketEvent,
     Warning,
     WarningListener,
     WarningState,
     WarningType,
-} from "../types/WarningManager";
-import { determineIncidentType } from "../utils/incident-utils";
-import { determineSpeedCameraType } from "../utils/speed-camera-utils";
-import { getRoundingThreshold, isFeatureAhead, warningThresholds } from "../utils/warning-manager-utils";
-import { io } from "./index";
+} from "../../types/WarningManager";
+import { SocketEvent } from "../../types/Ws";
+import { determineIncidentType } from "../../utils/incident-utils";
+import { determineSpeedCameraType } from "../../utils/speed-camera-utils";
+import { getRoundingThreshold, isFeatureAhead, warningThresholds } from "../../utils/warning-manager-utils";
 
-export const eventDataCache = new Map<
-    string,
-    { data: FeatureCollection<Geometry, GeometryCollection>; timestamp: number; }
->();
+export const eventDataCache = new Map<string, EventDataCache>();
 export const warningTimeouts = new Map<string, NodeJS.Timeout>();
 
-export const sendWarning = async (data: WarningListener, socket: Socket) => {
+export const registerWarningHandlers = (socket: Socket) => {
+    socket.on(SocketEvent.USER_LOCATION, (data: WarningListener) => {
+        sendWarning(data, socket);
+    });
+};
+
+const sendWarning = async (data: WarningListener, socket: Socket) => {
     const { eventType, lon, lat, heading, speed, userId, eventWarningType } = data;
 
     if (!eventType || !lon || !lat || !heading || !speed || !userId) {
@@ -76,7 +79,7 @@ export const sendWarning = async (data: WarningListener, socket: Socket) => {
 
     if (warning.warningType) {
         if (!io) return;
-        io.to(userId).emit(SocketEvent.WARNING, warning);
+        io.to(userId).emit(SocketEvent.WARNING_MANAGER, warning);
 
         if (warningTimeouts.has(userId)) {
             clearTimeout(warningTimeouts.get(userId));
@@ -84,7 +87,7 @@ export const sendWarning = async (data: WarningListener, socket: Socket) => {
 
         const timeout = setTimeout(() => {
             if (!io) return;
-            io.to(userId).emit(SocketEvent.WARNING, INITIAL_WARNING);
+            io.to(userId).emit(SocketEvent.WARNING_MANAGER, INITIAL_WARNING);
             warningTimeouts.delete(userId);
         }, INTERVAL.CLEAR_WARNING_EVENTS_INTERVAL_IN_SECONDS);
 
