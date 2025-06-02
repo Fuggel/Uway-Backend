@@ -94,12 +94,81 @@ Retrieve nearby gas stations based on the provided coordinates.
 Retrieve route directions based on the provided start and destination coordinates.
 
 -   **Method**: `GET`
--   **URL**: `https://uway-backend-3kp6.onrender.com/api/directions?profile=profileType&startCoordinates=lon,lat&destinationCoordinates=lon,lat&excludeTypes=type&waypoint=lon,lat`
+-   **URL**: `https://uway-backend-3kp6.onrender.com/api/directions?profile=profileType&startCoordinates=lon,lat&destinationCoordinates=lon,lat&excludeTypes=type`
 -   **Parameters**:
     -   `profile`: The type of routing profile (e.g., `driving`, `walking`, `cycling`).
     -   `startCoordinates`: Longitude and latitude of the starting point.
     -   `destinationCoordinates`: Longitude and latitude of the destination.
     -   `excludeTypes` (optional): Road types to exclude from routing (e.g., `toll`, `highway`).
-    -   `waypoint` (optional): An intermediate point along the route.
 -   **Response**:
     -   Returns a FeatureCollection JSON with the route details, including waypoints and step-by-step directions.
+
+## WebSocket
+
+### Warning Manager
+
+Enables real-time alerts for incidents and speed cameras based on the user's live location.
+
+#### Emit: `user-location`
+
+Send periodically (e.g., every 2 seconds) while navigation is active.
+
+-   **Payload**:
+
+    ```ts
+    {
+        eventType: "incident" | "speed-camera";
+        lon: number;
+        lat: number;
+        heading: number;
+        speed: number;
+        userId: string;
+        eventWarningType: string | null;
+    }
+    ```
+
+-   **Example**:
+
+    ```ts
+    {
+        eventType: "speed-camera",
+        lon: 13.405,
+        lat: 52.52,
+        heading: 170,
+        speed: 65,
+        userId: "XYZ123",
+        eventWarningType: null
+    }
+    ```
+
+Send one user-location event periodically per event type (incident, speed-camera).
+
+#### Listen: `warning-manager`
+
+The backend responds with a warning when the user is near a relevant event.
+
+-   **Response Payload**:
+
+    ```ts
+    {
+        warningType: "incident" | "speed-camera";
+        warningState: "early" | "late";
+        eventWarningType: string;
+        textToSpeech: string;
+        text: string;
+    }
+    ```
+
+-   **Example**:
+
+    ```ts
+    {
+        warningType: "speed-camera",
+        warningState: "early",
+        eventWarningType: "fixed",
+        textToSpeech: "Fixed speed camera in 300 meters.",
+        text: "Fixed speed camera in 300 m."
+    }
+    ```
+
+Use this to trigger TTS announcements and/or local notifications in the mobile app.
