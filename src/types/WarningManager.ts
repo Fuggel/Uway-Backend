@@ -10,7 +10,6 @@ export interface WarningListener {
     lat: number | null;
     heading: number | null;
     speed: number | null;
-    userId: string | null;
     eventWarningType: EventWarningType | null;
 }
 

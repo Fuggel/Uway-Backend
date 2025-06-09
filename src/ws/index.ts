@@ -1,6 +1,7 @@
 import http from "http";
 import { Server } from "socket.io";
 
+import { socketAuthMiddleware } from "../middleware/jwt-middleware";
 import { eventDataCache, registerWarningHandlers, warningTimeouts } from "./namespaces/warning-manager";
 
 let io: Server | null = null;
@@ -12,6 +13,8 @@ export const initWebSocketServer = (httpServer: http.Server) => {
             methods: ["GET", "POST"],
         },
     });
+
+    io.use(socketAuthMiddleware);
 
     io.on("connection", (socket) => {
         console.log(`New client connected: ${socket.id}`);

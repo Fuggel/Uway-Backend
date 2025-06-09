@@ -32,7 +32,8 @@ export const registerWarningHandlers = (socket: Socket) => {
 };
 
 const sendWarning = async (data: WarningListener, socket: Socket) => {
-    const { eventType, lon, lat, heading, speed, userId, eventWarningType } = data;
+    const { eventType, lon, lat, heading, speed, eventWarningType } = data;
+    const userId = socket.data?.user?.id;
 
     if (!eventType || !lon || !lat || !heading || !speed || !userId) {
         return;
