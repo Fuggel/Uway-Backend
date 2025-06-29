@@ -24,7 +24,10 @@ export const verifyJWT = (req: Request, res: Response, next: NextFunction) => {
 };
 
 export const socketAuthMiddleware = (socket: Socket, next: (err?: Error) => void) => {
-    const token = socket.handshake.auth.token || socket.handshake.headers["authorization"]?.split(" ")[1];
+    const token =
+        socket.handshake.auth.token ||
+        socket.handshake.query.token ||
+        socket.handshake.headers["authorization"]?.split(" ")[1];
 
     if (!token) {
         return next(new Error("Authentication error: Token not provided"));
