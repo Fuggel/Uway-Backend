@@ -1,6 +1,51 @@
 # Uway Backend
 
-## Endpoints
+Express.js backend service for the [Uway app](https://github.com/Fuggel/Uway) providing REST API endpoints for location services, real-time traffic data, and WebSocket communication for live warnings.
+
+## Architecture
+
+<img src="architecture.png" alt="Architecture" style="border-radius: 8px;" />
+
+## Features
+
+-   **JWT Authentication**: RevenueCat subscription validation and token generation
+-   **Location Services**: Speed cameras, speed limits, and traffic incidents
+-   **Search Integration**: Mapbox-powered location search and suggestions
+-   **Gas Station Data**: Real-time fuel prices and station information
+-   **Route Optimization**: Turn-by-turn directions with customizable exclusions
+-   **Real-time Warnings**: WebSocket-based incident and speed camera alerts
+-   **Rate Limiting**: API protection and usage control
+
+## Tech Stack
+
+-   **Express.js** with TypeScript
+-   **Socket.IO** for WebSocket communication
+-   **JWT** for authentication
+-   **Turf.js** for geospatial calculations
+
+## Quick Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Copy environment template and adjust as needed
+cp .env.example .env
+
+# Start development server
+npm run dev
+```
+
+## Development Commands
+
+| Command         | Description              |
+| --------------- | ------------------------ |
+| `npm install`   | Install dependencies     |
+| `npm run dev`   | Start development server |
+| `npm run build` | Build TypeScript         |
+| `npm start`     | Start production server  |
+
+## API Endpoints
 
 ### Get JWT
 
